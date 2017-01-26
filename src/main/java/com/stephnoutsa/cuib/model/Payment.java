@@ -13,7 +13,7 @@ public class Payment {
     
     // Private variables
     int id;
-    String date, amount, school;
+    String date, amount, type, school;
     
     // Empty constructor
     public Payment() {
@@ -21,21 +21,23 @@ public class Payment {
     }
     
     // Constructor
-    public Payment(int id, String date, String amount, String school) {
+    public Payment(int id, String date, String amount, String type, String school) {
         this.id = id;
         this.date = date;
         this.amount = amount;
+        this.type = type;
         this.school = school;
     }
     
     // Constructor
-    public Payment(String date, String amount, String school) {
+    public Payment(String date, String amount, String type, String school) {
         this.date = date;
         this.amount = amount;
+        this.type = type;
         this.school = school;
     }
     
-    // Getter and setter methods
+    // Getter and Setter methods
     public int getId() {
         return id;
     }
@@ -58,6 +60,14 @@ public class Payment {
 
     public void setAmount(String amount) {
         this.amount = amount;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getSchool() {

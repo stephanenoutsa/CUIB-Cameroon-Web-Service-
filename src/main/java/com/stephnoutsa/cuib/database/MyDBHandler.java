@@ -100,6 +100,7 @@ public class MyDBHandler {
     public static final String PAY_COLUMN_ID = "ID";
     public static final String PAY_COLUMN_DATE = "DATE";
     public static final String PAY_COLUMN_AMT = "AMOUNT";
+    public static final String PAY_COLUMN_TYPE = "TYPE";
     public static final String PAY_COLUMN_SCHOOL = "SCHOOL";
     
     // JDBC driver name and database URL
@@ -2323,11 +2324,12 @@ public class MyDBHandler {
             
             db = conn.createStatement();
             
-            String query = "INSERT INTO " + TABLE_PAYMENTS + "("
-                    + PAY_COLUMN_DATE + ", " + PAY_COLUMN_AMT + ", "
+            String query = "INSERT INTO " + TABLE_PAYMENTS + "(" + PAY_COLUMN_DATE + ", "
+                    + PAY_COLUMN_AMT + ", " + PAY_COLUMN_TYPE + ", "
                     + PAY_COLUMN_SCHOOL + ") VALUES(\'"
                     + payment.getDate() + "\', \'"
                     + payment.getAmount() + "\', \'"
+                    + payment.getType() + "\', \'"
                     + payment.getSchool() + "\')";
             System.out.println("Payment ID: " + payment.getId());
 
@@ -2380,6 +2382,7 @@ public class MyDBHandler {
                 p.setId(result.getInt(PAY_COLUMN_ID));
                 p.setDate(result.getString(PAY_COLUMN_DATE));
                 p.setAmount(result.getString(PAY_COLUMN_AMT));
+                p.setType(result.getString(PAY_COLUMN_TYPE));
                 p.setSchool(result.getString(PAY_COLUMN_SCHOOL));
                 
                 paymentList.add(p);
@@ -2437,6 +2440,7 @@ public class MyDBHandler {
                 p.setId(id);
                 p.setDate(result.getString(PAY_COLUMN_DATE));
                 p.setAmount(result.getString(PAY_COLUMN_AMT));
+                p.setType(result.getString(PAY_COLUMN_TYPE));
                 p.setSchool(result.getString(PAY_COLUMN_SCHOOL));
             }
                 
