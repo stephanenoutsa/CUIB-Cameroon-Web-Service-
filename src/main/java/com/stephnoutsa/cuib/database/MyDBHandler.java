@@ -8,6 +8,7 @@ package com.stephnoutsa.cuib.database;
 import com.stephnoutsa.cuib.model.Course;
 import com.stephnoutsa.cuib.model.Lecturer;
 import com.stephnoutsa.cuib.model.Message;
+import com.stephnoutsa.cuib.model.Payment;
 import com.stephnoutsa.cuib.model.Results;
 import com.stephnoutsa.cuib.model.Student;
 import com.stephnoutsa.cuib.model.Timetable;
@@ -94,6 +95,12 @@ public class MyDBHandler {
     public static final String RES_COLUMN_SEMESTER = "SEMESTER";
     public static final String RES_COLUMN_MATRICULE = "MATRICULE";
     public static final String RES_COLUMN_URL = "URL";
+    
+    public static final String TABLE_PAYMENTS = "PAYMENTS";
+    public static final String PAY_COLUMN_ID = "ID";
+    public static final String PAY_COLUMN_DATE = "DATE";
+    public static final String PAY_COLUMN_AMT = "AMOUNT";
+    public static final String PAY_COLUMN_SCHOOL = "SCHOOL";
     
     // JDBC driver name and database URL
     static final String JDBC_DRIVER = "org.apache.derby.jdbc.ClientDriver";  
@@ -2223,7 +2230,6 @@ public class MyDBHandler {
                     + results.getMatricule() + "\', \'"
                     + results.getUrl() + "\')";
             System.out.println("Results ID: " + results.getId());
-            System.out.println("Query: " + query);
 
             db.executeUpdate(query);
         } catch (SQLException se) {
@@ -2301,6 +2307,161 @@ public class MyDBHandler {
         }
         
         return r;
+    }
+    
+    // Add payment to Payments table
+    public Payment addPayment(Payment payment) {        
+        Connection conn = null;
+        Statement db = null;
+        
+        try {
+            // Register JDBC driver
+            Class.forName(JDBC_DRIVER);
+            
+            // Open a connection
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            
+            db = conn.createStatement();
+            
+            String query = "INSERT INTO " + TABLE_PAYMENTS + "("
+                    + PAY_COLUMN_DATE + ", " + PAY_COLUMN_AMT + ", "
+                    + PAY_COLUMN_SCHOOL + ") VALUES(\'"
+                    + payment.getDate() + "\', \'"
+                    + payment.getAmount() + "\', \'"
+                    + payment.getSchool() + "\')";
+            System.out.println("Payment ID: " + payment.getId());
+
+            db.executeUpdate(query);
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // finally block used to close resources
+            try {
+                if (db != null)
+                    db.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+            try {
+               if (conn != null)
+                  conn.close();
+            } catch (SQLException se) {
+               se.printStackTrace();
+            }
+        }
+        
+        return payment;
+    }
+    
+    // Get all payments from Payments table
+    public List<Payment> getAllPayments() {
+        List<Payment> paymentList = new ArrayList<>();
+        
+        Connection conn = null;
+        Statement db = null;
+        
+        try {
+            // Register JDBC driver
+            Class.forName(JDBC_DRIVER);
+            
+            // Open a connection
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            
+            db = conn.createStatement();
+            
+            String query = "SELECT * FROM " + TABLE_PAYMENTS;
+            ResultSet result = db.executeQuery(query);
+            
+            while(result.next()) {
+                Payment p = new Payment();
+                
+                p.setId(result.getInt(PAY_COLUMN_ID));
+                p.setDate(result.getString(PAY_COLUMN_DATE));
+                p.setAmount(result.getString(PAY_COLUMN_AMT));
+                p.setSchool(result.getString(PAY_COLUMN_SCHOOL));
+                
+                paymentList.add(p);
+            }
+            
+            System.out.println("List of payments delivered");
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // finally block used to close resources
+            try {
+                if (db != null)
+                    db.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+        
+        // Reverse the order of the payments
+        Collections.reverse(paymentList);
+        
+        return paymentList;
+    }
+    
+    // Get single payment from Payments table
+    public Payment getPayment(int id) {
+        Payment p = new Payment();
+        
+        Connection conn = null;
+        Statement db = null;
+        
+        try {
+            // Register JDBC driver
+            Class.forName(JDBC_DRIVER);
+            
+            // Open a connection
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            
+            db = conn.createStatement();
+            
+            String query = "SELECT * FROM " + TABLE_PAYMENTS + " WHERE "
+                    + PAY_COLUMN_ID + " =" + id;
+            
+            ResultSet result = db.executeQuery(query);
+            
+            if (result.next()) {
+                p.setId(id);
+                p.setDate(result.getString(PAY_COLUMN_DATE));
+                p.setAmount(result.getString(PAY_COLUMN_AMT));
+                p.setSchool(result.getString(PAY_COLUMN_SCHOOL));
+            }
+                
+            System.out.println("Payment delivered");
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // finally block used to close resources
+            try {
+                if (db != null)
+                    db.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+        
+        return p;
     }
     
     // Convert array to string
